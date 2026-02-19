@@ -64,7 +64,7 @@
           <span class="demo-icon">🔑</span>
           <div class="demo-text">
             <span class="demo-label">Demo accounts</span>
-            <span class="demo-creds">admin / staff / tenant · all use password: <b>123</b></span>
+            <span class="demo-creds">admin@fixflow.com / staff@fixflow.com / tenant@fixflow.com · password: <b>role + 123</b></span>
           </div>
         </div>
 
@@ -119,10 +119,10 @@ async function handleLogin() {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 10% 65%, rgba(216, 180, 254, 0.65) 0%, transparent 52%),
-    radial-gradient(ellipse at 88% 88%, rgba(252, 165, 165, 0.55) 0%, transparent 48%),
-    radial-gradient(ellipse at 90% 8%,  rgba(254, 243, 199, 0.6)  0%, transparent 42%),
-    #fdf8ff;
+    radial-gradient(ellipse at 10% 65%, rgba(134, 239, 172, 0.45) 0%, transparent 52%),
+    radial-gradient(ellipse at 88% 88%, rgba(187, 247, 208, 0.4) 0%, transparent 48%),
+    radial-gradient(ellipse at 90% 8%,  rgba(220, 252, 231, 0.5) 0%, transparent 42%),
+    #f8faf9;
   padding: 40px 20px;
 }
 
@@ -132,7 +132,7 @@ async function handleLogin() {
   inset: 0;
   background-image: repeating-conic-gradient(
     from 0deg at 50% -8%,
-    rgba(180, 140, 230, 0.045) 0deg 3.6deg,
+    rgba(22, 101, 52, 0.03) 0deg 3.6deg,
     transparent 3.6deg 7.2deg
   );
   pointer-events: none;
@@ -164,7 +164,7 @@ async function handleLogin() {
 
 /* ── Large heading ── */
 .auth-heading {
-  font-size: 48px;
+  font-size: clamp(28px, 6vw, 48px);
   font-weight: 800;
   color: #1a1a1a;
   letter-spacing: -0.03em;
@@ -176,13 +176,13 @@ async function handleLogin() {
 /* ── Card ── */
 .auth-card {
   width: 100%;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   border-radius: 24px;
-  padding: 36px 36px 28px;
-  box-shadow: 0 4px 32px rgba(160, 120, 220, 0.1);
+  padding: clamp(20px, 5vw, 36px) clamp(20px, 5vw, 36px) 28px;
+  box-shadow: 0 4px 32px rgba(22, 101, 52, 0.08);
 }
 
 /* ── Error ── */
@@ -362,13 +362,27 @@ async function handleLogin() {
 }
 
 .auth-footer a {
-  color: #1a1a1a;
+  color: #166534;
   font-weight: 600;
   text-decoration: none;
   margin-left: 4px;
 }
 
-.auth-footer a:hover {
-  text-decoration: underline;
+.auth-footer a:hover { text-decoration: underline; }
+
+/* ── Demo Credentials ── */
+.demo-creds { font-size: clamp(10px, 2.5vw, 11px); }
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .auth-page { padding: 24px 12px; align-items: flex-start; padding-top: 40px; }
+  .auth-badge { margin-bottom: 14px; }
+  .auth-heading { margin-bottom: 20px; }
+  .field-row { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .demo-btn { flex-direction: column; align-items: flex-start; gap: 8px; padding: 14px; }
 }
+
+.field-input:focus { border-color: #86EFAC; box-shadow: 0 0 0 3px rgba(22,101,52,0.1); }
+
+.remember-me input[type="checkbox"] { accent-color: #166534; }
 </style>

@@ -376,8 +376,22 @@ function formatDate(dateStr) {
 }
 
 @media (max-width: 900px) {
-  .detail-grid {
-    grid-template-columns: 1fr;
+  .detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .detail-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
+  .detail-title { font-size: 17px; }
+  .detail-meta  { gap: 8px; }
+  .assign-row   { flex-direction: column; }
+  .assign-row .btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .back-btn { font-size: 13px; padding: 6px 12px; }
 }
 </style>

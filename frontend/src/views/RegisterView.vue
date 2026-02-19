@@ -12,19 +12,19 @@
         <div class="brand-desc">Join thousands of building managers and residents using FixFlow.</div>
         <div class="brand-features">
           <div class="brand-feature">
-            <div class="feature-dot" style="background: rgba(108,99,255,0.3)">
+            <div class="feature-dot" style="background: rgba(74,222,128,0.2)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             Submit requests in under 60 seconds
           </div>
           <div class="brand-feature">
-            <div class="feature-dot" style="background: rgba(16,185,129,0.3)">
+            <div class="feature-dot" style="background: rgba(74,222,128,0.2)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
             </div>
-            Real-time status tracking
+            Real-time status tracking & analytics
           </div>
           <div class="brand-feature">
-            <div class="feature-dot" style="background: rgba(245,158,11,0.3)">
+            <div class="feature-dot" style="background: rgba(74,222,128,0.2)">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             Direct communication with staff
@@ -174,7 +174,7 @@ async function handleRegister() {
 .auth-page {
   min-height: 100vh;
   display: flex;
-  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+  background: linear-gradient(135deg, #0F3D22 0%, #166534 50%, #1B7A42 100%);
 }
 
 .auth-left {
@@ -182,7 +182,7 @@ async function handleRegister() {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px;
+  padding: clamp(24px, 5vw, 48px);
   position: relative;
 }
 
@@ -194,7 +194,7 @@ async function handleRegister() {
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: rgba(108, 99, 255, 0.2);
+  background: rgba(74, 222, 128, 0.12);
 }
 
 .auth-left::after {
@@ -205,7 +205,7 @@ async function handleRegister() {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: rgba(255, 107, 107, 0.15);
+  background: rgba(22, 163, 74, 0.15);
 }
 
 .auth-branding {
@@ -219,9 +219,9 @@ async function handleRegister() {
   width: 72px;
   height: 72px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(74, 222, 128, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -275,12 +275,13 @@ async function handleRegister() {
 }
 
 .auth-right {
-  width: 480px;
+  width: min(480px, 100%);
+  max-width: 480px;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px 40px;
+  padding: clamp(24px, 5vw, 48px) clamp(20px, 5vw, 40px);
   overflow-y: auto;
 }
 
@@ -329,7 +330,12 @@ async function handleRegister() {
 
 @media (max-width: 800px) {
   .auth-page { flex-direction: column; }
-  .auth-left { display: none; }
-  .auth-right { width: 100%; min-height: 100vh; }
+  .auth-left  { display: none; }
+  .auth-right { width: 100%; max-width: 100%; min-height: 100vh; }
+}
+
+@media (max-width: 480px) {
+  .auth-right { padding: 32px 16px; }
+  .auth-card  { max-width: 100%; }
 }
 </style>

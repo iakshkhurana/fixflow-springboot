@@ -83,7 +83,7 @@ function navigateToDetail(id) {
 <style scoped>
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 16px;
 }
 
@@ -105,5 +105,10 @@ function navigateToDetail(id) {
 
 .empty-state p {
   color: var(--text-light);
+}
+
+@media (max-width: 480px) {
+  .page-header  { flex-direction: column; align-items: flex-start; }
+  .page-header .btn { width: 100%; justify-content: center; }
 }
 </style>

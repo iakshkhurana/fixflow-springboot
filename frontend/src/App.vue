@@ -1,64 +1,127 @@
 <template>
   <div id="app-root">
-    <!-- Sidebar is shown for authenticated pages, not on login/register -->
-    <Navbar v-if="authStore.isLoggedIn" />
+
+    <!-- Mobile Top Bar (shown only on small screens, authenticated) -->
+    <div v-if="authStore.isLoggedIn" class="mobile-topbar">
+      <div class="mobile-logo">
+        <svg width="28" height="28" viewBox="0 0 38 38" fill="none">
+          <defs>
+            <linearGradient id="m-logo-grad" x1="0" y1="0" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#1B7A42"/>
+              <stop offset="100%" stop-color="#0F4D29"/>
+            </linearGradient>
+          </defs>
+          <rect width="38" height="38" rx="11" fill="url(#m-logo-grad)"/>
+          <g transform="translate(7, 7)">
+            <path d="M20.24 5.76a4.5 4.5 0 0 1-6.14 6.14L5.76 20.24a3 3 0 0 1-4.24-4.24l8.34-8.34a4.5 4.5 0 0 1 6.14-6.14l-2.47 2.47 2.47 2.47 2.24-2.24z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </g>
+        </svg>
+        <span>FixFlow</span>
+      </div>
+      <button class="hamburger" @click="sidebarOpen = !sidebarOpen" :class="{ active: sidebarOpen }" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Sidebar overlay (mobile) -->
+    <Transition name="fade">
+      <div
+        v-if="authStore.isLoggedIn && sidebarOpen"
+        class="sidebar-overlay"
+        @click="sidebarOpen = false"
+      ></div>
+    </Transition>
+
+    <!-- Sidebar -->
+    <Navbar
+      v-if="authStore.isLoggedIn"
+      :is-open="sidebarOpen"
+      @close="sidebarOpen = false"
+    />
+
+    <!-- Main Content -->
     <main :class="{ 'with-sidebar': authStore.isLoggedIn }">
       <RouterView />
     </main>
+
   </div>
 </template>
 
 <script setup>
-import { RouterView } from 'vue-router'
+import { ref, watch } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 import Navbar from './components/Navbar.vue'
 import { useAuthStore } from './stores/authStore'
 
 const authStore = useAuthStore()
+const route = useRoute()
+const sidebarOpen = ref(false)
+
+// Close sidebar on route change (mobile UX)
+watch(() => route.path, () => { sidebarOpen.value = false })
 </script>
 
 <style>
-/* ===== Global CSS Variables ===== */
+/* ===== CSS Custom Properties ===== */
 :root {
-  --primary: #6C63FF;
-  --primary-dark: #5A52E0;
-  --primary-light: #8B85FF;
-  --accent: #6C63FF;
-  --accent2: #FF6B6B;
-  --success: #10B981;
-  --warning: #F59E0B;
-  --danger: #EF4444;
-  --gray: #94A3B8;
-  --light-bg: #F0F2FF;
-  --white: #FFFFFF;
-  --text: #1E1B4B;
-  --text-light: #64748B;
-  --border: #E8E8FF;
-  --shadow: 0 2px 12px rgba(108, 99, 255, 0.08);
-  --shadow-md: 0 8px 32px rgba(108, 99, 255, 0.15);
-  --shadow-lg: 0 16px 48px rgba(108, 99, 255, 0.2);
-  --radius: 12px;
-  --radius-lg: 16px;
-  --sidebar-width: 256px;
-  --gradient: linear-gradient(135deg, #6C63FF 0%, #5A52E0 100%);
-  --gradient-warm: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
-  --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  /* Colors */
+  --primary:          #166534;
+  --primary-dark:     #14532D;
+  --primary-light:    #16A34A;
+  --accent:           #166534;
+  --accent2:          #22C55E;
+  --success:          #16A34A;
+  --warning:          #F59E0B;
+  --danger:           #EF4444;
+  --gray:             #9CA3AF;
+  --light-bg:         #F3F4F6;
+  --white:            #FFFFFF;
+  --text:             #111827;
+  --text-light:       #6B7280;
+  --border:           #E5E7EB;
+
+  /* Shadows */
+  --shadow:           0 1px 8px  rgba(0,0,0,0.06);
+  --shadow-md:        0 4px 24px rgba(0,0,0,0.09);
+  --shadow-lg:        0 12px 40px rgba(0,0,0,0.13);
+
+  /* Shape */
+  --radius:           12px;
+  --radius-lg:        16px;
+
+  /* Layout */
+  --sidebar-width:    260px;
+  --mobile-topbar-h:  56px;
+  --content-px:       32px;
+  --content-py:       28px;
+
+  /* Gradients */
+  --gradient:         linear-gradient(135deg, #166534 0%, #14532D 100%);
+  --gradient-warm:    linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  --gradient-success: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
   --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-  --gradient-dark: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  --gradient-dark:    linear-gradient(135deg, #1B6B3A 0%, #0F3D22 100%);
 }
 
-/* ===== Reset & Base ===== */
-* {
+/* ===== Reset ===== */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--light-bg);
   color: var(--text);
   font-size: 14px;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app-root {
@@ -66,6 +129,54 @@ body {
   min-height: 100vh;
 }
 
+/* ===== Mobile Top Bar ===== */
+.mobile-topbar {
+  display: none;
+}
+
+/* ===== Sidebar Overlay ===== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+
+/* ===== Hamburger ===== */
+.hamburger {
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.hamburger:hover { background: rgba(0,0,0,0.06); }
+
+.hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: #374151;
+  border-radius: 2px;
+  transition: all 0.25s ease;
+  transform-origin: center;
+}
+
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ===== Main Content ===== */
 main {
   flex: 1;
   min-height: 100vh;
@@ -74,18 +185,23 @@ main {
 
 main.with-sidebar {
   margin-left: var(--sidebar-width);
-  padding: 28px 32px;
+  padding: var(--content-py) var(--content-px);
 }
 
-/* ===== Shared Components ===== */
+/* ===== Fade Transition ===== */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* ===== Shared Card ===== */
 .card {
   background: var(--white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
-  padding: 24px;
-  border: 1px solid rgba(108, 99, 255, 0.06);
+  padding: 20px;
+  border: 1px solid var(--border);
 }
 
+/* ===== Buttons ===== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -96,42 +212,41 @@ main.with-sidebar {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
+  font-family: inherit;
   transition: all 0.2s ease;
   text-decoration: none;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 .btn-primary {
   background: var(--gradient);
   color: var(--white);
-  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.35);
+  box-shadow: 0 4px 14px rgba(22,101,52,0.35);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.45);
+  box-shadow: 0 6px 20px rgba(22,101,52,0.45);
 }
 
-.btn-primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
+.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
 
 .btn-success {
   background: var(--gradient-success);
   color: var(--white);
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 14px rgba(22,163,74,0.3);
 }
 
 .btn-success:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(22,163,74,0.4);
 }
 
 .btn-danger {
   background: linear-gradient(135deg, #EF4444, #DC2626);
   color: var(--white);
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 14px rgba(239,68,68,0.3);
 }
 
 .btn-outline {
@@ -144,18 +259,13 @@ main.with-sidebar {
   background: var(--gradient);
   color: var(--white);
   border-color: transparent;
-  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.3);
+  box-shadow: 0 4px 14px rgba(22,101,52,0.3);
 }
 
-.btn-sm {
-  padding: 6px 14px;
-  font-size: 13px;
-}
+.btn-sm { padding: 6px 14px; font-size: 13px; }
 
-/* ===== Form Elements ===== */
-.form-group {
-  margin-bottom: 18px;
-}
+/* ===== Forms ===== */
+.form-group { margin-bottom: 18px; }
 
 .form-group label {
   display: block;
@@ -171,15 +281,18 @@ main.with-sidebar {
   border: 2px solid var(--border);
   border-radius: 10px;
   font-size: 14px;
+  font-family: inherit;
   color: var(--text);
   background: var(--white);
   transition: all 0.2s ease;
   outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .form-control:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(22,101,52,0.1);
 }
 
 .form-row {
@@ -188,15 +301,10 @@ main.with-sidebar {
   gap: 16px;
 }
 
-/* ===== Table ===== */
-.table-wrapper {
-  overflow-x: auto;
-}
+/* ===== Tables ===== */
+.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+table { width: 100%; border-collapse: collapse; min-width: 500px; }
 
 thead th {
   text-align: left;
@@ -206,8 +314,9 @@ thead th {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--text-light);
-  background: #F8F7FF;
+  background: #F9FAFB;
   border-bottom: 2px solid var(--border);
+  white-space: nowrap;
 }
 
 tbody td {
@@ -217,25 +326,21 @@ tbody td {
   font-size: 14px;
 }
 
-tbody tr:hover {
-  background: linear-gradient(90deg, #F8F7FF, #FAFAFF);
-  cursor: pointer;
-}
+tbody tr:hover { background: #F0FDF4; cursor: pointer; }
+tbody tr:last-child td { border-bottom: none; }
 
-tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* ===== Page Header ===== */
+/* ===== Page Headers ===== */
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 28px;
+  flex-wrap: wrap;
 }
 
 .page-title {
-  font-size: 24px;
+  font-size: clamp(20px, 4vw, 26px);
   font-weight: 800;
   color: var(--text);
   letter-spacing: -0.02em;
@@ -247,7 +352,7 @@ tbody tr:last-child td {
   margin-top: 3px;
 }
 
-/* ===== Alert / Error ===== */
+/* ===== Alerts ===== */
 .alert {
   padding: 13px 16px;
   border-radius: 10px;
@@ -256,17 +361,8 @@ tbody tr:last-child td {
   font-weight: 500;
 }
 
-.alert-error {
-  background: #FEF2F2;
-  color: #991B1B;
-  border: 1px solid #FCA5A5;
-}
-
-.alert-success {
-  background: #ECFDF5;
-  color: #065F46;
-  border: 1px solid #6EE7B7;
-}
+.alert-error  { background: #FEF2F2; color: #991B1B; border: 1px solid #FCA5A5; }
+.alert-success{ background: #F0FDF4; color: #166534; border: 1px solid #86EFAC; }
 
 /* ===== Loading ===== */
 .loading {
@@ -279,14 +375,60 @@ tbody tr:last-child td {
   gap: 10px;
 }
 
-/* ===== Responsive ===== */
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  :root { --content-px: 24px; }
+}
+
 @media (max-width: 768px) {
+  :root {
+    --content-px: 16px;
+    --content-py: 16px;
+  }
+
+  /* Show mobile topbar */
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: var(--mobile-topbar-h);
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: -0.02em;
+  }
+
+  /* Main content shifts down for mobile topbar */
   main.with-sidebar {
-    margin-left: 0;
-    padding: 16px;
+    margin-left: 0 !important;
+    padding-top: calc(var(--mobile-topbar-h) + var(--content-py));
   }
-  .form-row {
-    grid-template-columns: 1fr;
-  }
+
+  .form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  :root { --content-px: 12px; }
 }
 </style>
