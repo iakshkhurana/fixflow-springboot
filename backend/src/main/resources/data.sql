@@ -1,0 +1,6 @@
+-- FixFlow seed data is handled by DataSeeder.java (CommandLineRunner)
+-- which checks if data already exists before inserting,
+-- preventing duplicate seed data on restarts.
+--
+-- This file is intentionally left empty.
+-- (spring.sql.init.mode=never in application.properties so this won't run anyway)
