@@ -20,6 +20,10 @@
 
 *Streamlining building operations — from submission to resolution*
 
+<br/>
+
+![FixFlow Dashboard](assets/image.png)
+
 </div>
 
 ---
